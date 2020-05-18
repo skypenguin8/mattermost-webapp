@@ -13,10 +13,19 @@ import {addUsersToChannel} from 'actions/channel_actions';
 import ChannelInviteModal from './channel_invite_modal.jsx';
 
 function mapStateToProps(state) {
+    const profilesNotInCurrentChannel = getProfilesNotInCurrentChannel(state);
+    const profilesNotInCurrentTeam = getProfilesNotInCurrentTeam(state);
+
     return {
-        profilesNotInCurrentChannel: getProfilesNotInCurrentChannel(state),
-        profilesNotInCurrentTeam: getProfilesNotInCurrentTeam(state),
+        profilesNotInCurrentChannel: profilesNotInCurrentChannel.sort(sortByNickname),
+        profilesNotInCurrentTeam: profilesNotInCurrentTeam.sort(sortByNickname),
     };
+}
+
+function sortByNickname(a, b) {
+    const nickNameA = a.nickname;
+    const nickNameB = b.nickname;
+    return nickNameA.localeCompare(nickNameB);
 }
 
 function mapDispatchToProps(dispatch) {

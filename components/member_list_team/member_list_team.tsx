@@ -158,15 +158,25 @@ export default class MemberListTeam extends React.Component<Props, State> {
         } else {
             usersToDisplay = [];
 
+            const userMap = [];
             for (let i = 0; i < users.length; i++) {
-                const user = users[i];
-
-                if (teamMembers[user.id] && user.delete_at === 0) {
-                    usersToDisplay.push(user);
-                    actionUserProps[user.id] = {
-                        teamMember: teamMembers[user.id],
-                    };
+                const userTmp = users[i];
+                if (teamMembers[userTmp.id] && userTmp.delete_at === 0) {
+                    userMap.push(userTmp);
                 }
+            }
+
+            userMap.sort((a, b) => {
+                const nickNameA = a.nickname;
+                const nickNameB = b.nickname;
+                return nickNameA.localeCompare(nickNameB);
+            });
+
+            for (const user of userMap) {
+                usersToDisplay.push(user);
+                actionUserProps[user.id] = {
+                    teamMember: teamMembers[user.id],
+                };
             }
         }
 

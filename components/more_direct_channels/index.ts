@@ -76,7 +76,7 @@ function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
         currentTeamId: team.id,
         currentTeamName: team.name,
         searchTerm,
-        users: users.sort(sortByUsername),
+        users: users.sort(sortByNickname),
         myDirectChannels,
         groupChannels: filteredGroupChannels,
         statuses: state.entities.users.statuses,
@@ -85,6 +85,13 @@ function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
         restrictDirectMessage,
         totalCount: stats.total_users_count,
     };
+}
+
+function sortByNickname(a: UserProfile, b: UserProfile): number {
+    const nameA = a.nickname;
+    const nameB = b.nickname;
+
+    return nameA.localeCompare(nameB);
 }
 
 const filterGroupChannels = memoizeResult((channels: Array<{profiles: Array<UserProfile>} & Channel>, term: string) => {

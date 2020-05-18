@@ -1299,8 +1299,8 @@ export function sortUsersByStatusAndDisplayName(users, statusesByUserId, teammat
             return UserStatusesWeight[aStatus] - UserStatusesWeight[bStatus];
         }
 
-        const aName = displayUsername(a, teammateNameDisplay);
-        const bName = displayUsername(b, teammateNameDisplay);
+        const aName = a.nickname;
+        const bName = b.nickname;
 
         return aName.localeCompare(bName);
     }
@@ -1322,9 +1322,9 @@ export function displayEntireNameForUser(user) {
     if (fullName && user.nickname) {
         displayName = (
             <span>
-                {'@' + user.username}
+                {user.position}
                 {' - '}
-                <span className='light'>{fullName + ' (' + user.nickname + ')'}</span>
+                <span className='light'>{fullName}</span>
             </span>
         );
     } else if (fullName) {
