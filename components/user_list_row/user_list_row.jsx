@@ -101,15 +101,6 @@ export default class UserListRow extends React.Component {
                         id={userCountID}
                         className='more-modal__name'
                     >
-                        <UserProfile
-                            userId={this.props.user.id}
-                            hasMention={true}
-                            displayUsername={true}
-                        />
-                        &nbsp;
-                        {this.props.user.first_name || this.props.user.last_name || this.props.user.nickname ?
-                            '-' : null}
-                        &nbsp;
                         {Utils.displayFullAndNicknameForUser(this.props.user)}
                     </div>
                     <div

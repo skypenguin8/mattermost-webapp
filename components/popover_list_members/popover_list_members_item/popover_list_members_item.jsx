@@ -65,7 +65,7 @@ export default class PopoverListMembersItem extends React.PureComponent {
                 />
                 <div className='more-modal__details d-flex whitespace--nowrap'>
                     <div className='more-modal__name'>
-                        {this.props.displayName}
+                        {this.props.user.position} {this.props.displayName}
                     </div>
                     <BotBadge
                         show={Boolean(this.props.user.is_bot)}

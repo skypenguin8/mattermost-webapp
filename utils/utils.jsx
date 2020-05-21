@@ -1311,7 +1311,7 @@ export function displayFullAndNicknameForUser(user) {
 
     if (fullName && user.nickname) {
         displayName = (
-            <span className='light'>{fullName + ' (' + user.nickname + ')'}</span>
+            <span className='light'>{user.position + ' ' + fullName}</span>
         );
     } else if (fullName) {
         displayName = (

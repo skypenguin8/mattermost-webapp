@@ -128,14 +128,24 @@ export default class MemberListChannel extends React.PureComponent<Props, State>
         this.props.actions.setModalSearchTerm(term);
     }
 
+    sortByNickname(a: UserProfile, b: UserProfile): number {
+        const nameA = a.nickname;
+        const nameB = b.nickname;
+
+        return nameA.localeCompare(nameB);
+    }
+
     render() {
+        const userdata = this.props.usersToDisplay;
+        userdata.sort(this.sortByNickname);
+
         if (this.state.loading) {
             return (<LoadingScreen/>);
         }
         const channelIsArchived = this.props.channel.delete_at !== 0;
         return (
             <SearchableUserList
-                users={this.props.usersToDisplay}
+                users={userdata}
                 usersPerPage={USERS_PER_PAGE}
                 total={this.props.totalChannelMembers}
                 nextPage={this.nextPage}
