@@ -45,7 +45,7 @@ export default class SidebarHeaderDropdownButton extends React.PureComponent {
                 className='team__name'
                 data-teamid={this.props.teamId}
             >
-                {this.props.teamDisplayName}
+                {this.props.teamDescription}
             </h1>
         );
         if (this.props.teamDescription) {
@@ -80,7 +80,7 @@ export default class SidebarHeaderDropdownButton extends React.PureComponent {
                             id='headerUsername'
                             className='user__name'
                         >
-                            {'@' + this.props.currentUser.username}
+                            {this.props.currentUser.first_name} {this.props.currentUser.last_name}
                         </div>
                         <button
                             className='style--none sidebar-header-dropdown__icon'
