@@ -6,19 +6,34 @@ import {bindActionCreators} from 'redux';
 
 import {getTeamStats} from 'mattermost-redux/actions/teams';
 import {getProfilesNotInChannel, searchProfiles} from 'mattermost-redux/actions/users';
-import {getProfilesNotInCurrentChannel, getProfilesNotInCurrentTeam} from 'mattermost-redux/selectors/entities/users';
+import {getProfilesNotInCurrentChannel, getProfilesNotInCurrentTeam, getProfilesNotInTeam, makeGetProfilesNotInChannel} from 'mattermost-redux/selectors/entities/users';
 
 import {addUsersToChannel} from 'actions/channel_actions';
 
 import ChannelInviteModal from './channel_invite_modal.jsx';
 
-function mapStateToProps(state) {
-    const profilesNotInCurrentChannel = getProfilesNotInCurrentChannel(state);
-    const profilesNotInCurrentTeam = getProfilesNotInCurrentTeam(state);
+function makeMapStateToProps(initialState, initialProps) {
+    let doGetProfilesNotInChannel;
+    if (initialProps.channelId && initialProps.teamId) {
+        doGetProfilesNotInChannel = makeGetProfilesNotInChannel();
+    }
 
-    return {
-        profilesNotInCurrentChannel: profilesNotInCurrentChannel.sort(sortByNickname),
-        profilesNotInCurrentTeam: profilesNotInCurrentTeam.sort(sortByNickname),
+    return (state, props) => {
+        let profilesNotInCurrentChannel = [];
+        let profilesNotInCurrentTeam = [];
+
+        if (doGetProfilesNotInChannel) {
+            profilesNotInCurrentChannel = doGetProfilesNotInChannel(state, props.channelId);
+            profilesNotInCurrentTeam = getProfilesNotInTeam(state, props.teamId);
+        } else {
+            profilesNotInCurrentChannel = getProfilesNotInCurrentChannel(state);
+            profilesNotInCurrentTeam = getProfilesNotInCurrentTeam(state);
+        }
+
+        return {
+            profilesNotInCurrentChannel: profilesNotInCurrentChannel.sort(sortByNickname),
+            profilesNotInCurrentTeam: profilesNotInCurrentTeam.sort(sortByNickname),
+        };
     };
 }
 
@@ -39,4 +54,4 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChannelInviteModal);
+export default connect(makeMapStateToProps, mapDispatchToProps)(ChannelInviteModal);
