@@ -1596,7 +1596,7 @@
   "channel_header.addChannelHeader": "채널 설명 추가하기..",
   "channel_header.channelMembers": "멤버",
   "channel_header.convert": "단체방으로 전환",
-  "channel_header.delete": "Archive Channel",
+  "channel_header.delete": "대화방 삭제",
   "channel_header.directchannel.you": "{displayname} (you) ",
   "channel_header.flagged": "보관된 메시지",
   "channel_header.leave": "채널 떠나기",
@@ -3182,8 +3182,8 @@
   "more_direct_channels.new_convo_note": "개인방이 신규생성됩니다. 인원을 계속 추가할 경우 단체방을 사용하십시요.",
   "more_direct_channels.new_convo_note.full": "더 이상 인원을 추가할 수 없습니다. 새로운 방을 생성하십시요.",
   "sidebar_left.add_channel_dropdown.browseChannels": "공개방 검색",
-  "sidebar_left.add_channel_dropdown.createNewChannel": "공개/단체방 만들기",
-  "sidebar_left.add_channel_dropdown.browseOrCreateChannels": "공개/단체방 만들기",
+  "sidebar_left.add_channel_dropdown.createNewChannel": "단체방 만들기",
+  "sidebar_left.add_channel_dropdown.browseOrCreateChannels": "단체방 만들기",
   "channel_switch_modal.title": "채널 이동",
   "quick_switch_modal.switchChannels": "채널 이동",
   "sidebar_left.channel_filter.viewing": "정렬방법:",
@@ -3201,5 +3201,7 @@
   "search_list_option.in": "특정 대화방 검색",
   "search_list_option.on": "특정 일자의 대화 검색",
   "search_list_option.phrases": "2개 이상의 문장 검색",
+  "center_panel.direct.closeDirectMessage": "개인방 나가기",
+  "center_panel.direct.closeGroupMessage": "개인방(그룹) 나가기",
   "sidebar_left.channel_navigator.jumpTo": "채널 이동"
 }

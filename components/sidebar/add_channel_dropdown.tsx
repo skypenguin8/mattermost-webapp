@@ -60,9 +60,9 @@ class AddChannelDropdown extends React.PureComponent<Props, State> {
     render() {
         const {intl, canCreateChannel, canJoinPublicChannel} = this.props;
 
-        if (!(canCreateChannel || canJoinPublicChannel)) {
-            return null;
-        }
+        // if (!(canCreateChannel || canJoinPublicChannel)) {
+        //     return null;
+        // }
 
         const tooltip = (
             <Tooltip
@@ -77,26 +77,19 @@ class AddChannelDropdown extends React.PureComponent<Props, State> {
         );
 
         return (
-            <MenuWrapper className='AddChannelDropdown'>
-                <button
-                    className='AddChannelDropdown_dropdownButton'
-                    aria-label={intl.formatMessage({id: 'sidebar_left.add_channel_dropdown.dropdownAriaLabel', defaultMessage: 'Add Channel Dropdown'})}
+            <button
+                className='AddChannelDropdown_dropdownButton'
+                aria-label={intl.formatMessage({id: 'sidebar_left.add_channel_dropdown.dropdownAriaLabel', defaultMessage: 'Add Channel Dropdown'})}
+                onClick={this.props.showNewChannelModal}
+            >
+                <OverlayTrigger
+                    delayShow={500}
+                    placement='top'
+                    overlay={tooltip}
                 >
-                    <OverlayTrigger
-                        delayShow={500}
-                        placement='top'
-                        overlay={tooltip}
-                    >
-                        <i className='icon-plus'/>
-                    </OverlayTrigger>
-                </button>
-                <Menu
-                    id='AddChannelDropdown'
-                    ariaLabel={intl.formatMessage({id: 'sidebar_left.add_channel_dropdown.dropdownAriaLabel', defaultMessage: 'Add Channel Dropdown'})}
-                >
-                    {this.renderDropdownItems()}
-                </Menu>
-            </MenuWrapper>
+                    <i className='icon-plus'/>
+                </OverlayTrigger>
+            </button>
         );
     }
 }

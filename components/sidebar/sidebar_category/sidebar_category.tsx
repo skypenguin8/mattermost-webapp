@@ -155,35 +155,39 @@ export default class SidebarCategory extends React.PureComponent<Props> {
         }
 
         return (
-            <div className='SidebarChannelGroup a11y__section'>
-                <div className='SidebarChannelGroupHeader'>
-                    <button
-                        ref={this.categoryTitleRef}
-                        className={classNames('SidebarChannelGroupHeader_groupButton', {favorites: category.type === CategoryTypes.FAVORITES})}
-                        onClick={this.handleCollapse}
-                        aria-label={displayName}
-                    >
-                        <i
-                            className={classNames('icon icon-chevron-down', {
-                                'icon-rotate-minus-90': isCollapsed,
-                                'hide-arrow': hideArrow,
-                            })}
-                        />
-                        <div>
-                            {displayName}
-                        </div>
-                        {directMessagesModalButton}
-                    </button>
+            category.type !== 'public'
+            ?
+                <div className='SidebarChannelGroup a11y__section'>
+                    <div className='SidebarChannelGroupHeader'>
+                        <button
+                            ref={this.categoryTitleRef}
+                            className={classNames('SidebarChannelGroupHeader_groupButton', {favorites: category.type === CategoryTypes.FAVORITES})}
+                            onClick={this.handleCollapse}
+                            aria-label={displayName}
+                        >
+                            <i
+                                className={classNames('icon icon-chevron-down', {
+                                    'icon-rotate-minus-90': isCollapsed,
+                                    'hide-arrow': hideArrow,
+                                })}
+                            />
+                            <div>
+                                {displayName}
+                            </div>
+                            {directMessagesModalButton}
+                        </button>
+                    </div>
+                    <div className='SidebarChannelGroup_content'>
+                        <ul
+                            role='list'
+                            className='NavGroupContent'
+                        >
+                            {renderedChannels}
+                        </ul>
+                    </div>
                 </div>
-                <div className='SidebarChannelGroup_content'>
-                    <ul
-                        role='list'
-                        className='NavGroupContent'
-                    >
-                        {renderedChannels}
-                    </ul>
-                </div>
-            </div>
+            :
+                ''
         );
     }
 }

@@ -239,23 +239,10 @@ export default class NewChannelModal extends React.PureComponent {
                     <div className='radio'>
                         <label>
                             <input
-                                id='public'
-                                type='radio'
-                                name='channelType'
-                                checked={this.props.channelType === 'O'}
-                                onChange={this.handlePublicTypeSelect}
-                                aria-labelledby='channelModalTypeLabel'
-                            />
-                            {publicChannelDesc}
-                        </label>
-                    </div>
-                    <div className='radio'>
-                        <label>
-                            <input
                                 id='private'
                                 type='radio'
                                 name='channelType'
-                                checked={this.props.channelType === 'P'}
+                                checked={true}
                                 onChange={this.handlePrivateTypeSelect}
                                 aria-labelledby='channelModalTypeLabel'
                             />
@@ -268,7 +255,7 @@ export default class NewChannelModal extends React.PureComponent {
             typeOptions = (
                 <div className='type-container multi-select__radio'>
                     <div className='radio'>
-                        {canCreatePublicChannel ? publicChannelDesc : null}
+                        {canCreatePublicChannel ? null : null}
                         {canCreatePrivateChannel ? privateChannelDesc : null}
                     </div>
                 </div>

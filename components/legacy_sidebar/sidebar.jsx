@@ -568,44 +568,48 @@ class LegacySidebar extends React.PureComponent {
                         const ariaLabel = section.name.toLowerCase();
 
                         return (
-                            <ul
-                                key={section.type}
-                                aria-label={ariaLabel}
-                                className='nav nav-pills nav-stacked a11y__section'
-                                id={sectionId + 'List'}
-                                tabIndex='-1'
-                            >
-                                <li className='sidebar-section__header'>
-                                    <h4
-                                        role='presentation'
-                                        id={sectionId}
-                                    >
-                                        <ChannelName
+                            sectionId !== 'publicChannel'
+                            ?
+                                <ul
+                                    key={section.type}
+                                    aria-label={ariaLabel}
+                                    className='nav nav-pills nav-stacked a11y__section'
+                                    id={sectionId + 'List'}
+                                    tabIndex='-1'
+                                >
+                                    <li className='sidebar-section__header'>
+                                        <h4
+                                            role='presentation'
+                                            id={sectionId}
+                                        >
+                                            <ChannelName
+                                                sectionType={section.type}
+                                                channelName={section.name}
+                                                browsePublicDirectChannels={this.showMorePublicDirectChannelsModal}
+                                            />
+                                        </h4>
+                                        <ChannelCreate
                                             sectionType={section.type}
-                                            channelName={section.name}
-                                            browsePublicDirectChannels={this.showMorePublicDirectChannelsModal}
+                                            canCreatePublicChannel={this.props.canCreatePublicChannel}
+                                            canCreatePrivateChannel={this.props.canCreatePrivateChannel}
+                                            createPublicChannel={this.showNewPublicChannelModal}
+                                            createPrivateChannel={this.showNewPrivateChannelModal}
+                                            createDirectMessage={this.handleOpenMoreDirectChannelsModal}
+                                            createPublicDirectChannel={this.showNewPublicChannelModal}
                                         />
-                                    </h4>
-                                    <ChannelCreate
+                                    </li>
+                                    {section.items}
+                                    <ChannelMore
+                                        currentTeamId={this.props.currentTeam.id}
                                         sectionType={section.type}
-                                        canCreatePublicChannel={this.props.canCreatePublicChannel}
-                                        canCreatePrivateChannel={this.props.canCreatePrivateChannel}
-                                        createPublicChannel={this.showNewPublicChannelModal}
-                                        createPrivateChannel={this.showNewPrivateChannelModal}
-                                        createDirectMessage={this.handleOpenMoreDirectChannelsModal}
-                                        createPublicDirectChannel={this.showNewPublicChannelModal}
+                                        moreChannels={this.showMoreChannelsModal}
+                                        moreDirectMessages={this.handleOpenMoreDirectChannelsModal}
+                                        browsePublicDirectChannels={this.showMorePublicDirectChannelsModal}
+                                        viewArchivedChannels={this.props.viewArchivedChannels}
                                     />
-                                </li>
-                                {section.items}
-                                <ChannelMore
-                                    currentTeamId={this.props.currentTeam.id}
-                                    sectionType={section.type}
-                                    moreChannels={this.showMoreChannelsModal}
-                                    moreDirectMessages={this.handleOpenMoreDirectChannelsModal}
-                                    browsePublicDirectChannels={this.showMorePublicDirectChannelsModal}
-                                    viewArchivedChannels={this.props.viewArchivedChannels}
-                                />
-                            </ul>
+                                </ul>
+                            :
+                                ''
                         );
                     })}
                 </div>
