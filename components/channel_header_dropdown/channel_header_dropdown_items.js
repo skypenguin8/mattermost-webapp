@@ -270,7 +270,7 @@ export default class ChannelHeaderDropdown extends React.PureComponent {
                             text={localizeMessage('channel_header.convert', 'Convert to Private Channel')}
                         />
                     </TeamPermissionGate>
-                    <ChannelPermissionGate
+                    {/*<ChannelPermissionGate
                         channelId={channel.id}
                         teamId={channel.team_id}
                         permissions={[channelDeletePermission]}
@@ -286,7 +286,7 @@ export default class ChannelHeaderDropdown extends React.PureComponent {
                             }}
                             text={localizeMessage('channel_header.delete', 'Archive Channel')}
                         />
-                    </ChannelPermissionGate>
+                    </ChannelPermissionGate>*/}
                 </Menu.Group>
                 <Menu.Group>
                     {pluginItems}
