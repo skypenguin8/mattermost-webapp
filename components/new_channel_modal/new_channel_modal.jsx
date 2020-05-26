@@ -7,7 +7,7 @@ import React from 'react';
 import {Modal} from 'react-bootstrap';
 import {FormattedMessage} from 'react-intl';
 
-import GlobeIcon from 'components/widgets/icons/globe_icon';
+/*import GlobeIcon from 'components/widgets/icons/globe_icon';*/
 import LockIcon from 'components/widgets/icons/lock_icon';
 import LocalizedInput from 'components/localized_input/localized_input';
 import Constants from 'utils/constants.jsx';
@@ -108,6 +108,8 @@ export default class NewChannelModal extends React.PureComponent {
         this.channelHeaderInput = React.createRef();
         this.channelPurposeInput = React.createRef();
         this.displayNameInput = React.createRef();
+
+        this.props.onTypeSwitched('P');
     }
 
     componentDidMount() {
@@ -158,7 +160,7 @@ export default class NewChannelModal extends React.PureComponent {
     }
 
     handlePublicTypeSelect = () => {
-        this.props.onTypeSwitched('O');
+        this.props.onTypeSwitched('P');
     }
 
     handlePrivateTypeSelect = () => {
@@ -201,7 +203,7 @@ export default class NewChannelModal extends React.PureComponent {
             );
         }
 
-        const publicChannelDesc = (
+        /*const publicChannelDesc = (
             <div className='flex-parent'>
                 <GlobeIcon className='icon icon__globe icon--body type-icon'/>
                 <FormattedMessage
@@ -213,7 +215,7 @@ export default class NewChannelModal extends React.PureComponent {
                     defaultMessage=' - Anyone can join this channel'
                 />
             </div>
-        );
+        );*/
 
         const privateChannelDesc = (
             <div className='flex-parent'>

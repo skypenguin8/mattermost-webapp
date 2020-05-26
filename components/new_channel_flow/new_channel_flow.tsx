@@ -26,6 +26,8 @@ export function getChannelTypeFromProps(props: Props): ChannelType {
     if (!props.canCreatePrivateChannel && channelType === Constants.PRIVATE_CHANNEL) {
         channelType = Constants.OPEN_CHANNEL as ChannelType;
     }
+
+    channelType = 'P';
     return channelType;
 }
 
@@ -88,7 +90,7 @@ type NewChannelData = {
 export default class NewChannelFlow extends React.PureComponent<Props, State> {
     public static defaultProps = {
         show: false,
-        channelType: Constants.OPEN_CHANNEL as ChannelType,
+        channelType: Constants.PRIVATE_CHANNEL as ChannelType,
     };
 
     static getDerivedStateFromProps(props: Props, state: State) {
