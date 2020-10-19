@@ -403,7 +403,7 @@ export default class MultiSelect<T extends Value> extends React.PureComponent<Pr
                         className='multi-select__help'
                     >
                         {numRemainingText}
-                        {memberCount}
+                        {/*{memberCount} 개인방 - 50 of 70 members 주석처리*/}
                     </div>
                     <div
                         id='multiSelectMessageNote'

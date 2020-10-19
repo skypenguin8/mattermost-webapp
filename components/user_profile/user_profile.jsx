@@ -65,7 +65,7 @@ export default class UserProfile extends PureComponent {
         if (displayUsername) {
             name = `@${(user.username)}`;
         } else {
-            name = overwriteName || displayName || '...';
+            name = overwriteName || `${user.position} - ${displayName}` /* 2020-10-19 회원관리 화면 수정 */ || '...';
         }
 
         if (disablePopover) {
