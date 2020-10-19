@@ -1,5 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
+/* eslint-disable react/no-string-refs */
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -14,6 +15,7 @@ type Props = {
     width: number;
     height: number;
     data?: any;
+    id: string;
 }
 
 export default class LineChart extends React.PureComponent<Props> {
@@ -115,9 +117,11 @@ export default class LineChart extends React.PureComponent<Props> {
         } else {
             content = (
                 <canvas
+                    data-testid={this.props.id}
                     ref='canvas'
                     width={this.props.width}
                     height={this.props.height}
+                    data-labels={this.props.data.labels}
                 />
             );
         }
@@ -136,3 +140,4 @@ export default class LineChart extends React.PureComponent<Props> {
         );
     }
 }
+/* eslint-enable react/no-string-refs */

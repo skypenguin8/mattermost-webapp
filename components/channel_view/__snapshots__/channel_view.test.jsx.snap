@@ -13,7 +13,6 @@ exports[`components/channel_view Should match snapshot if channel is archived wi
   />
   <DeferredRenderWrapper
     channelId="channelId"
-    prevChannelId=""
   />
   <div
     className="post-create__container"
@@ -34,7 +33,6 @@ exports[`components/channel_view Should match snapshot if channel is archived wi
         <FormattedMessage
           defaultMessage="Close Channel"
           id="center_panel.archived.closeChannel"
-          values={Object {}}
         />
       </button>
     </div>
@@ -55,7 +53,6 @@ exports[`components/channel_view Should match snapshot if channel roles loading 
   />
   <DeferredRenderWrapper
     channelId="channelId"
-    prevChannelId=""
   />
 </div>
 `;
@@ -73,7 +70,6 @@ exports[`components/channel_view Should match snapshot with base props 1`] = `
   />
   <DeferredRenderWrapper
     channelId="channelId"
-    prevChannelId=""
   />
   <div
     className="post-create__container"

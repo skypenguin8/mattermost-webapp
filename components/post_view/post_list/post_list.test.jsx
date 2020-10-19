@@ -43,7 +43,8 @@ const baseProps = {
     isFirstLoad: true,
     atLatestPost: false,
     formattedPostIds: [],
-    prevChannelId: 'prevChannelId',
+    channelManuallyUnread: false,
+    isPrefetchingInProcess: false,
 };
 
 describe('components/post_view/post_list', () => {
@@ -73,6 +74,14 @@ describe('components/post_view/post_list', () => {
         await wrapper.instance().postsOnLoad();
         expect(wrapper.state('loadingNewerPosts')).toBe(false);
         expect(wrapper.state('loadingOlderPosts')).toBe(false);
+    });
+
+    it('Should not call loadUnreads if isPrefetchingInProcess is true', async () => {
+        const emptyPostList = [];
+
+        shallow(<PostList {...{...baseProps, postListIds: emptyPostList, isPrefetchingInProcess: true}}/>);
+
+        expect(actionsProp.loadUnreads).not.toHaveBeenCalledWith(baseProps.channelId);
     });
 
     it('Should call for before and afterPosts', async () => {
@@ -232,18 +241,29 @@ describe('components/post_view/post_list', () => {
             const emptyPostList = [];
 
             const wrapper = shallow(
-                <PostList {...{...baseProps, postListIds: emptyPostList, prevChannelId: 'prevChannelId'}}/>,
+                <PostList {...{...baseProps, postListIds: emptyPostList}}/>,
             );
 
             await wrapper.instance().postsOnLoad();
-            expect(actionsProp.markChannelAsRead).toHaveBeenCalledWith(baseProps.channelId, 'prevChannelId');
-            expect(actionsProp.markChannelAsViewed).toHaveBeenCalledWith(baseProps.channelId, 'prevChannelId');
+            expect(actionsProp.markChannelAsRead).toHaveBeenCalledWith(baseProps.channelId);
+            expect(actionsProp.markChannelAsViewed).toHaveBeenCalledWith(baseProps.channelId);
+        });
+        test('Should call markChannelAsReadAndViewed on componeneWillUnmount', async () => {
+            const emptyPostList = [];
+
+            const wrapper = shallow(
+                <PostList {...{...baseProps, postListIds: emptyPostList}}/>,
+            );
+
+            await wrapper.instance().componentWillUnmount();
+            expect(actionsProp.markChannelAsRead).toHaveBeenCalledWith(baseProps.channelId);
+            expect(actionsProp.markChannelAsViewed).toHaveBeenCalledWith(baseProps.channelId);
         });
         test('Should not call markChannelAsReadAndViewed as it is a permalink', async () => {
             const emptyPostList = [];
             const focusedPostId = 'new';
             shallow(
-                <PostList {...{...baseProps, postListIds: emptyPostList, prevChannelId: 'prevChannelId', focusedPostId}}/>,
+                <PostList {...{...baseProps, postListIds: emptyPostList, focusedPostId}}/>,
             );
 
             await actionsProp.loadPostsAround();

@@ -5,9 +5,9 @@ import React from 'react';
 import {FormattedMessage} from 'react-intl';
 
 import {ChannelType, Channel} from 'mattermost-redux/types/channels';
-import {Error} from 'mattermost-redux/types/errors';
+import {ServerError} from 'mattermost-redux/types/errors';
 
-import Constants from 'utils/constants';
+import Constants, {ModalIdentifiers} from 'utils/constants';
 import * as Utils from 'utils/utils';
 import {cleanUpUrlable} from 'utils/url';
 
@@ -26,27 +26,15 @@ export function getChannelTypeFromProps(props: Props): ChannelType {
     if (!props.canCreatePrivateChannel && channelType === Constants.PRIVATE_CHANNEL) {
         channelType = Constants.OPEN_CHANNEL as ChannelType;
     }
-
-    channelType = 'P';
     return channelType;
 }
 
 export type Props = {
 
     /**
-     * Set whether to show the modal or not
-     */
-    show: boolean;
-
-    /**
      * Set to Constants.OPEN_CHANNEL or Constants.PRIVATE_CHANNEL depending on which modal we should show first
      */
     channelType: ChannelType;
-
-    /**
-     * Function to call when modal is dimissed
-     */
-    onModalDismissed: () => void;
 
     /**
      * The current team ID
@@ -64,8 +52,9 @@ export type Props = {
     canCreatePrivateChannel: boolean;
 
     actions: {
-        createChannel: (channel: Channel) => Promise<{data: Channel; error?: Error}>;
-        switchToChannel: (channel: Channel) => Promise<{}>;
+        createChannel: (channel: Channel) => Promise<{data?: Channel; error?: ServerError}>;
+        switchToChannel: (channel: Channel) => Promise<{data?: true; error?: true}>;
+        closeModal: (modalId: string) => void;
     };
 };
 
@@ -78,7 +67,6 @@ type State = {
     channelPurpose: string;
     channelHeader: string;
     nameModified: boolean;
-    show: boolean;
 }
 
 type NewChannelData = {
@@ -89,28 +77,8 @@ type NewChannelData = {
 
 export default class NewChannelFlow extends React.PureComponent<Props, State> {
     public static defaultProps = {
-        show: false,
-        channelType: Constants.PRIVATE_CHANNEL as ChannelType,
+        channelType: Constants.OPEN_CHANNEL as ChannelType,
     };
-
-    static getDerivedStateFromProps(props: Props, state: State) {
-        // If we are being shown, grab channel type from props and clear
-        if (props.show && !state.show) {
-            return {
-                serverError: '',
-                channelType: getChannelTypeFromProps(props),
-                flowState: SHOW_NEW_CHANNEL,
-                channelDisplayName: '',
-                channelName: '',
-                channelPurpose: '',
-                channelHeader: '',
-                nameModified: false,
-                show: props.show,
-            };
-        }
-
-        return {show: props.show};
-    }
 
     public constructor(props: Props) {
         super(props);
@@ -124,7 +92,6 @@ export default class NewChannelFlow extends React.PureComponent<Props, State> {
             channelPurpose: '',
             channelHeader: '',
             nameModified: false,
-            show: props.show,
         };
     }
 
@@ -159,18 +126,21 @@ export default class NewChannelFlow extends React.PureComponent<Props, State> {
             update_at: 0,
         };
 
-        actions.createChannel(channel).then((result: {data: Channel; error?: Error}) => {
-            if (result.error) {
-                this.onCreateChannelError(result.error);
-                return;
+        actions.createChannel(channel).then(({data, error}) => {
+            if (error) {
+                this.onCreateChannelError(error);
+            } else if (data) {
+                this.onModalDismissed();
+                actions.switchToChannel(data);
             }
-
-            this.props.onModalDismissed();
-            actions.switchToChannel(result.data);
         });
     };
 
-    onCreateChannelError = (err: Error) => {
+    onModalDismissed = () => {
+        this.props.actions.closeModal(ModalIdentifiers.NEW_CHANNEL_FLOW);
+    }
+
+    onCreateChannelError = (err: ServerError) => {
         if (err.server_error_id === 'model.channel.is_valid.2_or_more.app_error') {
             this.setState({
                 flowState: SHOW_EDIT_URL_THEN_COMPLETE,
@@ -240,37 +210,35 @@ export default class NewChannelFlow extends React.PureComponent<Props, State> {
         let changeURLSubmitButtonText: string | JSX.Element = '';
 
         // Only listen to flow state if we are being shown
-        if (this.props.show) {
-            switch (this.state.flowState) {
-            case SHOW_NEW_CHANNEL:
-                showChannelModal = true;
-                break;
-            case SHOW_EDIT_URL:
-                showChangeURLModal = true;
-                changeURLTitle = (
-                    <FormattedMessage
-                        id='channel_flow.changeUrlTitle'
-                        defaultMessage='Change Channel URL'
-                    />
-                );
-                changeURLSubmitButtonText = changeURLTitle;
-                break;
-            case SHOW_EDIT_URL_THEN_COMPLETE:
-                showChangeURLModal = true;
-                changeURLTitle = (
-                    <FormattedMessage
-                        id='channel_flow.set_url_title'
-                        defaultMessage='Set Channel URL'
-                    />
-                );
-                changeURLSubmitButtonText = (
-                    <FormattedMessage
-                        id='channel_flow.create'
-                        defaultMessage='Create Channel'
-                    />
-                );
-                break;
-            }
+        switch (this.state.flowState) {
+        case SHOW_NEW_CHANNEL:
+            showChannelModal = true;
+            break;
+        case SHOW_EDIT_URL:
+            showChangeURLModal = true;
+            changeURLTitle = (
+                <FormattedMessage
+                    id='channel_flow.changeUrlTitle'
+                    defaultMessage='Change Channel URL'
+                />
+            );
+            changeURLSubmitButtonText = changeURLTitle;
+            break;
+        case SHOW_EDIT_URL_THEN_COMPLETE:
+            showChangeURLModal = true;
+            changeURLTitle = (
+                <FormattedMessage
+                    id='channel_flow.set_url_title'
+                    defaultMessage='Set Channel URL'
+                />
+            );
+            changeURLSubmitButtonText = (
+                <FormattedMessage
+                    id='channel_flow.create'
+                    defaultMessage='Create Channel'
+                />
+            );
+            break;
         }
 
         return (
@@ -283,7 +251,7 @@ export default class NewChannelFlow extends React.PureComponent<Props, State> {
                     channelData={channelData}
                     serverError={this.state.serverError}
                     onSubmitChannel={this.onSubmit}
-                    onModalDismissed={this.props.onModalDismissed}
+                    onModalDismissed={this.onModalDismissed}
                     onTypeSwitched={this.typeSwitched}
                     onChangeURLPressed={this.urlChangeRequested}
                     onDataChanged={this.channelDataChanged}

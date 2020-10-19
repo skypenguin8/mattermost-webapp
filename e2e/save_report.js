@@ -14,10 +14,15 @@
  *      - AWS_S3_BUCKET, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
  *   For saving reports to Automation dashboard
  *      - DASHBOARD_ENABLE, DASHBOARD_ENDPOINT and DASHBOARD_TOKEN
+ *   For saving test cases to Test Management
+ *      - TM4J_ENABLE=true|false
+ *      - TM4J_API_KEY=[api_key]
+ *      - JIRA_PROJECT_KEY=[project_key], e.g. "MM",
+ *      - TM4J_FOLDER_ID=[folder_id], e.g. 847997
  *   For sending hooks to Mattermost channels
- *      - WEBHOOK_URL and DIAGNOSTIC_WEBHOOK_URL
+ *      - FULL_REPORT, WEBHOOK_URL and DIAGNOSTIC_WEBHOOK_URL
  *   Test type
- *      - TYPE=[type], e.g. "DAILY", "PR", "RELEASE"
+ *      - TYPE=[type], e.g. "MASTER", "PR", "RELEASE"
  */
 
 const {merge} = require('mochawesome-merge');
@@ -29,11 +34,13 @@ const {
     generateTestReport,
     removeOldGeneratedReports,
     sendReport,
+    readJsonFromFile,
     writeJsonToFile,
 } = require('./utils/report');
 const {saveArtifacts} = require('./utils/artifacts');
-const {MOCHAWESOME_REPORT_DIR} = require('./utils/constants');
+const {MOCHAWESOME_REPORT_DIR, RESULTS_DIR} = require('./utils/constants');
 const {saveDashboard} = require('./utils/dashboard');
+const {saveTestCases} = require('./utils/test_cases');
 
 require('dotenv').config();
 
@@ -46,6 +53,7 @@ const saveReport = async () => {
         DIAGNOSTIC_WEBHOOK_URL,
         DIAGNOSTIC_USER_ID,
         DIAGNOSTIC_TEAM_ID,
+        TM4J_ENABLE,
         TYPE,
         WEBHOOK_URL,
     } = process.env;
@@ -76,14 +84,15 @@ const saveReport = async () => {
     }
 
     // Send test report to "QA: UI Test Automation" channel via webhook
-    if (TYPE && WEBHOOK_URL) {
-        const data = generateTestReport(summary, result && result.success, result && result.reportLink);
+    if (TYPE && TYPE !== 'NONE' && WEBHOOK_URL) {
+        const environment = readJsonFromFile(`${RESULTS_DIR}/environment.json`);
+        const data = generateTestReport(summary, result && result.success, result && result.reportLink, environment);
         await sendReport('summary report to Community channel', WEBHOOK_URL, data);
     }
 
     // Send diagnostic report via webhook
-    // Send on "DAILY" type only
-    if (TYPE === 'DAILY' && DIAGNOSTIC_WEBHOOK_URL && DIAGNOSTIC_USER_ID && DIAGNOSTIC_TEAM_ID) {
+    // Send on "RELEASE" type only
+    if (TYPE === 'RELEASE' && DIAGNOSTIC_WEBHOOK_URL && DIAGNOSTIC_USER_ID && DIAGNOSTIC_TEAM_ID) {
         const data = generateDiagnosticReport(summary, {userId: DIAGNOSTIC_USER_ID, teamId: DIAGNOSTIC_TEAM_ID});
         await sendReport('test info for diagnostic analysis', DIAGNOSTIC_WEBHOOK_URL, data);
     }
@@ -91,6 +100,11 @@ const saveReport = async () => {
     // Save data to automation dashboard
     if (DASHBOARD_ENABLE === 'true') {
         await saveDashboard(jsonReport, BRANCH);
+    }
+
+    // Save test cases to Test Management
+    if (TM4J_ENABLE === 'true') {
+        await saveTestCases(jsonReport);
     }
 };
 
